@@ -65,4 +65,4 @@ fig
 model.getModelReliability()
 ```
 
-0.8217819999998218
+0.8811879999998812
