@@ -11,7 +11,7 @@ If you find the toolbox useful for your research and decide to use it in a paper
 
 [E Patelli, M Broggi, S Tolo, J Sadeghi, Cossan Software: A Multidisciplinary And Collaborative Software For Uncertainty Quantification, UNCECOMP 2017, At Rhodes Island, Greece, 2nd ECCOMAS Thematic Conference on Uncertainty Quantification in Computational Sciences and Engineering, June 2017.](https://www.researchgate.net/publication/317598944_COSSAN_SOFTWARE_A_MULTIDISCIPLINARY_AND_COLLABORATIVE_SOFTWARE_FOR_UNCERTAINTY_QUANTIFICATION)
 
-The code requires the cvxopt package (pip install cvxopt), pyDOE and numpy.
+The code requires the cvxopt package (pip install cvxopt), sklearn and numpy.
 
 Here is a brief demonstration of the code:
 
