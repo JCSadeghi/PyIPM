@@ -17,6 +17,8 @@ If you find the toolbox useful for your research and decide to use it in a paper
 
 The code requires the cvxopt package (pip install cvxopt), sklearn and numpy.
 
+### Tutorial
+
 Here is a brief demonstration of the code:
 
 First import the required dependancies:
