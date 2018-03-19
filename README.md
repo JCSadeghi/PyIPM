@@ -7,7 +7,9 @@
 This code is a port of the MATLAB Interval Predictor Model class from the OpenCossan generalised uncertainty quantification software. The code was tested in Python 2.7.
 This version of the code is significantly simplified. If the model obtained is too conservative for your requirements then you may wish to download [OpenCossan](http://www.cossan.co.uk), which is freely available after registration. The MATLAB version of the code contains many optimisations to improve the performance of the models.
 
-[Interval Predictor Model Code](http://personalpages.manchester.ac.uk/staff/jonathan.sadeghi/codes.htm)
+[More information about my work on the Cossan Interval Predictor Model Code](http://personalpages.manchester.ac.uk/staff/jonathan.sadeghi/codes.htm)
+
+[More information about what this toolbox actually does](https://www.researchgate.net/publication/317598944_COSSAN_SOFTWARE_A_MULTIDISCIPLINARY_AND_COLLABORATIVE_SOFTWARE_FOR_UNCERTAINTY_QUANTIFICATION)
 
 If you find the toolbox useful for your research and decide to use it in a paper we kindly request that you cite the following paper:
 
