@@ -72,4 +72,4 @@ model.getModelReliability()
 
 0.8811879999998812
 
-This means that, for a test set generated from the same function as the training data, our model predictions will be enclose the test set with probability greater than 88%. Note that in this case the model we have given is very conservative - an improved model with smaller prediction interval and higher coverage probability is available in the [OpenCossan](http://personalpages.manchester.ac.uk/staff/jonathan.sadeghi/codes.htm) version of the code.
+This means that, for a test set generated from the same function as the training data, our model predictions will be enclose the test set with probability greater than 0.88. Note that in this case the model we have given is very conservative - an improved model with smaller prediction interval and higher coverage probability is available in the [OpenCossan](http://personalpages.manchester.ac.uk/staff/jonathan.sadeghi/codes.htm) version of the code.
