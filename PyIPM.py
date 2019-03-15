@@ -1,75 +1,85 @@
 import numpy as np
-from sklearn.preprocessing import PolynomialFeatures
-#==============================================================================
+import sklearn.preprocessing
+import cvxopt
+
+# ==============================================================================
 #     This class is a port of the MATLAB code IntervalPredictorModel from
 #     OpenCossan
 #
 #     2018, Jonathan Sadeghi, COSSAN Working Group,
 #     University~of~Liverpool, United Kingdom
 #     See also:  http://cossan.co.uk/wiki/index.php/@IntervalPredictorModel
-#==============================================================================
+# ==============================================================================
+
 
 class PyIPM:
-    def __init__(self, polynomialDegree=1):
-        self.polynomialDegree = polynomialDegree
-        assert (type(self.polynomialDegree) == int), 'polynomialDegree parameter must be integer'
-    def fit(self,trainingInput,trainingOutput):
-        self.NFeatures=trainingInput.shape[1]
-        self.NDataPoints=trainingInput.shape[0]
+    def __init__(self, polynomial_degree=1):
+        self.polynomial_degree = polynomial_degree
+        assert (type(self.polynomial_degree) == int), 'polynomial_degree parameter must be integer'
+        self.n_features = None
+        self.n_data_points = None
+        self.input_scale = None
+        self.n_terms = None
+        self.param_vector = None
 
-        assert(trainingOutput.shape==(self.NDataPoints,)),'Number of input examples must equal number of output examples'
+    def fit(self, training_input, training_output):
+        self.n_features = training_input.shape[1]
+        self.n_data_points = training_input.shape[0]
 
-        self.InputScale=np.mean(np.abs(trainingInput),axis=0);
-        trainingInput=trainingInput/self.InputScale;
+        assert (training_output.shape == (
+            self.n_data_points,)), 'Number of input examples must equal number of output examples'
 
-        poly = PolynomialFeatures(self.polynomialDegree)
-        basis=poly.fit_transform(trainingInput)
-        self.Nterms=basis.shape[1]
+        self.input_scale = np.mean(np.abs(training_input), axis=0)
+        training_input = training_input / self.input_scale
 
-        basisSum=np.mean(np.absolute(basis), axis=0)
-        objective=np.concatenate((-basisSum,basisSum))
+        poly = sklearn.preprocessing.PolynomialFeatures(self.polynomial_degree)
+        basis = poly.fit_transform(training_input)
+        self.n_terms = basis.shape[1]
 
-        constraintMatrix=np.zeros((2*self.NDataPoints+self.Nterms,2*self.Nterms))
+        basis_sum = np.mean(np.absolute(basis), axis=0)
+        objective = np.concatenate((-basis_sum, basis_sum))
 
-        constraintMatrix[:self.NDataPoints,:self.Nterms]=-(basis-np.absolute(basis))/2
-        constraintMatrix[self.NDataPoints:-self.Nterms,:self.Nterms]=(basis+np.absolute(basis))/2
-        constraintMatrix[:self.NDataPoints,self.Nterms:]=-(basis+np.absolute(basis))/2
-        constraintMatrix[self.NDataPoints:-self.Nterms,self.Nterms:]=(basis-np.absolute(basis))/2
+        constraint_matrix = np.zeros((2 * self.n_data_points + self.n_terms, 2 * self.n_terms))
 
-        constraintMatrix[-self.Nterms:,:self.Nterms]=np.eye(self.Nterms)
-        constraintMatrix[-self.Nterms:,self.Nterms:]=-np.eye(self.Nterms)
+        constraint_matrix[:self.n_data_points, :self.n_terms] = -(basis - np.absolute(basis)) / 2
+        constraint_matrix[self.n_data_points:-self.n_terms, :self.n_terms] = (basis + np.absolute(basis)) / 2
+        constraint_matrix[:self.n_data_points, self.n_terms:] = -(basis + np.absolute(basis)) / 2
+        constraint_matrix[self.n_data_points:-self.n_terms, self.n_terms:] = (basis - np.absolute(basis)) / 2
 
-        b=np.zeros(((2*self.NDataPoints+self.Nterms),1))
-        b[:2*self.NDataPoints,0]=np.hstack((-trainingOutput,trainingOutput))
+        constraint_matrix[-self.n_terms:, :self.n_terms] = np.eye(self.n_terms)
+        constraint_matrix[-self.n_terms:, self.n_terms:] = -np.eye(self.n_terms)
 
-        from cvxopt import matrix, solvers
+        b = np.zeros(((2 * self.n_data_points + self.n_terms), 1))
+        b[:2 * self.n_data_points, 0] = np.hstack((-training_output, training_output))
 
-        sol=solvers.lp(matrix(objective),matrix(constraintMatrix),matrix(b))
+        sol = cvxopt.solvers.lp(cvxopt.matrix(objective), cvxopt.matrix(constraint_matrix), cvxopt.matrix(b))
 
-        self.paramVec=np.array(sol['x'])
+        self.param_vector = np.array(sol['x'])
 
         return self
-    def predict(self,testInput):
-        try:
-            getattr(self, "paramVec")
-        except AttributeError:
+
+    def predict(self, test_input):
+        if self.param_vector is None:
             raise RuntimeError("You must train IPM before predicting data!")
 
-        assert(testInput.shape[1]==self.NFeatures),'The provided test data has the wrong number of features'
+        assert (test_input.shape[1] == self.n_features), 'The provided test data has the wrong number of features'
 
-        NTestPoints=testInput.shape[0]
+        test_input = test_input / self.input_scale
 
-        testInput=testInput/self.InputScale
+        poly = sklearn.preprocessing.PolynomialFeatures(self.polynomial_degree)
+        basis = poly.fit_transform(test_input)
 
-        poly = PolynomialFeatures(self.polynomialDegree)
-        basis=poly.fit_transform(testInput)
+        upper_bound = 0.5 * np.dot(
+            np.hstack((basis - np.absolute(basis), basis + np.absolute(basis))),
+            self.param_vector)
+        lower_bound = 0.5 * np.dot(
+            np.hstack((basis + np.absolute(basis), basis - np.absolute(basis))),
+            self.param_vector)
 
-        upperBound=0.5*np.dot(np.hstack((basis-np.absolute(basis),basis+np.absolute(basis))),self.paramVec)
-        lowerBound=0.5*np.dot(np.hstack((basis+np.absolute(basis),basis-np.absolute(basis))),self.paramVec)
+        return upper_bound, lower_bound
 
-        return(upperBound,lowerBound)
-    def getModelReliability(self,confidence=1-10**-6):
-        if confidence<0 or confidence>1:
+    def get_model_reliability(self, confidence=1 - 10 ** -6):
+        if confidence < 0 or confidence > 1:
             print('Invalid confidence parameter value')
         else:
-            return(1-2*self.Nterms/((self.NDataPoints+1)*confidence))
+            return 1 - 2 * self.n_terms / ((self.n_data_points + 1) * confidence)

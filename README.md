@@ -21,7 +21,7 @@ The code requires the cvxopt package (pip install cvxopt), sklearn and numpy.
 
 Here is a brief demonstration of the code:
 
-First import the required dependancies:
+First import the required dependencies:
 
 ```python
 import numpy as np
@@ -31,23 +31,23 @@ from PyIPM import PyIPM
 Construct an Interval Predictor Model:
 
 ```python
-model=PyIPM(polynomialDegree=2)
+model = PyIPM(polynomial_degree=2)
 ```
 
 Sample 100 realisations from an arbitrary function to emulate training data. Two input features and one output:
 ```python
-x=5*(np.random.rand(100,2)-0.5)
-y=x[:,0]**2+x[:,1]**2*np.random.rand(1,100)
+x = 5 * (np.random.rand(100, 2) - 0.5)
+y = x[:, 0] ** 2 + x[:, 1] ** 2 * np.random.rand(1, 100)
 ```
 
 Fit the model to the training data:
 ```python
-model.fit(x,y[0,:])
+model.fit(x, y[0, :])
 ```
 
 Get upper and lower bound of model on the training data set:
 ```python
-upperBound,lowerBound=model.predict(x)
+upper_bound, lower_bound = model.predict(x)
 ```
 
 Plot the training data with the model predictions:
@@ -56,9 +56,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(x[:,0], x[:,1], y,color='black')
-ax.scatter(x[:,0], x[:,1], lowerBound[:,0])
-ax.scatter(x[:,0], x[:,1], upperBound[:,0])
+ax.scatter(x[:, 0], x[:, 1], y, color='black')
+ax.scatter(x[:, 0], x[:, 1], lower_bound[:, 0])
+ax.scatter(x[:, 0], x[:, 1], upper_bound[:, 0])
 fig
 ```
 
@@ -67,7 +67,7 @@ fig
 The fake training data is plotted in black. The upper bound predicted by our model is shown in yellow, and the lower bound is shown in blue.
 
 ```python
-model.getModelReliability()
+model.get_model_reliability()
 ```
 
 0.8811879999998812
