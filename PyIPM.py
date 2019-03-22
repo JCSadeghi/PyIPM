@@ -13,7 +13,14 @@ import cvxopt
 
 
 class PyIPM:
+    """
+    A class to train and query Interval Predictor Models
+    """
     def __init__(self, polynomial_degree=1):
+        """
+        Constructor for the Interval Predictor Model
+        :param polynomial_degree: Integer representing the degree of the fitted polynomial. Default 1.
+        """
         self.polynomial_degree = polynomial_degree
         assert (type(self.polynomial_degree) == int), 'polynomial_degree parameter must be integer'
         self.n_features = None
@@ -23,6 +30,11 @@ class PyIPM:
         self.param_vector = None
 
     def fit(self, training_input, training_output):
+        """
+        Fit the Interval Predictor Model to Training Data
+        :param training_input: NumPy array of IPM training inputs, dims: (n_samples x n_input_dimensions)
+        :param training_output: NumPy array of IPM training outputs, dims: (n_samples)
+        """
         self.n_features = training_input.shape[1]
         self.n_data_points = training_input.shape[0]
 
@@ -56,9 +68,12 @@ class PyIPM:
 
         self.param_vector = np.array(sol['x'])
 
-        return self
-
     def predict(self, test_input):
+        """
+        Make predictions from trained IPM
+        :param test_input: NumPy array of IPM test inputs, dims: (n_samples x n_input_dimensions)
+        :return: tuple containing upper and lower bound for test input
+        """
         if self.param_vector is None:
             raise RuntimeError("You must train IPM before predicting data!")
 
@@ -79,6 +94,11 @@ class PyIPM:
         return upper_bound, lower_bound
 
     def get_model_reliability(self, confidence=1 - 10 ** -6):
+        """
+        Compute the reliability of the trained IPM's prediction interval
+        :param confidence: the confidence with which the reliability is prescribed, float between 0 and 1
+        :return: reliability of the trained IPM's prediction interval, float between 0 and 1
+        """
         if confidence < 0 or confidence > 1:
             print('Invalid confidence parameter value')
         else:
