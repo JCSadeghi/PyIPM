@@ -1,6 +1,9 @@
 import numpy as np
 import sklearn.preprocessing
 import cvxopt
+import scipy.stats
+import scipy.misc
+import scipy.optimize
 
 # ==============================================================================
 #     This class is a port of the MATLAB code IntervalPredictorModel from
@@ -93,6 +96,17 @@ class PyIPM:
 
         return upper_bound, lower_bound
 
+    def get_model_reliability_old(self, confidence=1 - 10 ** -6):
+        """
+        Compute the reliability of the trained IPM's prediction interval
+        :param confidence: the confidence with which the reliability is prescribed, float between 0 and 1
+        :return: reliability of the trained IPM's prediction interval, float between 0 and 1
+        """
+        if confidence < 0 or confidence > 1:
+            print('Invalid confidence parameter value')
+        else:
+            return 1 - 2 * self.n_terms / ((self.n_data_points + 1) * (1-confidence))
+
     def get_model_reliability(self, confidence=1 - 10 ** -6):
         """
         Compute the reliability of the trained IPM's prediction interval
@@ -102,4 +116,11 @@ class PyIPM:
         if confidence < 0 or confidence > 1:
             print('Invalid confidence parameter value')
         else:
-            return 1 - 2 * self.n_terms / ((self.n_data_points + 1) * confidence)
+            x0 = scipy.optimize.bisect(lambda epsilon: self.beta(epsilon) - (1 - confidence), 0, 1)
+            reliability = 1 - x0
+            return reliability
+
+    def beta(self, epsilon):
+        d = 2 * self.n_terms
+        return scipy.stats.binom.cdf(d - 1, self.n_data_points, epsilon)
+
