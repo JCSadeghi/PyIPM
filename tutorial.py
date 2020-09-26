@@ -1,9 +1,9 @@
 import numpy as np
-from PyIPM import PyIPM
+import PyIPM
 
 np.random.seed(0)
 
-model = PyIPM(polynomial_degree=2)
+model = PyIPM.IPM(polynomial_degree=2)
 
 x = 5 * (np.random.rand(100, 2) - 0.5)
 y = x[:, 0] ** 2 + x[:, 1] ** 2 * np.random.rand(1, 100)
