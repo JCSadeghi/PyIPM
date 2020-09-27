@@ -1,5 +1,6 @@
-import pytest
 import numpy as np
+import pytest
+
 import PyIPM
 
 np.random.seed(0)
@@ -61,9 +62,13 @@ class TestIPM:
 
         tolerance = 0.01
 
-        assert(abs(upper_bound[0] - 1.15) < tolerance), "Upper bound does not match stored value"
+        assert (
+            abs(upper_bound[0] - 1.15) < tolerance
+        ), "Upper bound does not match stored value"
 
-        assert(abs(lower_bound[0] - 0.15) < tolerance), "Lower bound does not match stored value"
+        assert (
+            abs(lower_bound[0] - 0.15) < tolerance
+        ), "Lower bound does not match stored value"
 
     def test_reliability(self, model: PyIPM.IPM):
         """
@@ -76,4 +81,6 @@ class TestIPM:
 
         tolerance = 0.01
 
-        assert(abs(reliability - 0.68) < tolerance), "Model reliability does not match stored value"
+        assert (
+            abs(reliability - 0.68) < tolerance
+        ), "Model reliability does not match stored value"
