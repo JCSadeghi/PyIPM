@@ -7,7 +7,7 @@
 ![Upload Python Package](https://github.com/JCSadeghi/PyIPM/workflows/Upload%20Python%20Package/badge.svg)
 ![pre-commit](https://github.com/JCSadeghi/PyIPM/workflows/pre-commit/badge.svg)
 
-Install: 'pip install PyIPM==2.0'
+Install: `pip install PyIPM==2.0`
 
 This code is a port of the MATLAB Interval Predictor Model class from the OpenCossan generalised uncertainty quantification software. The code was tested in Python 2.7.
 This version of the code is significantly simplified. If the model obtained is too conservative for your requirements then you may wish to download [OpenCossan](http://www.cossan.co.uk), which is freely available after registration. The MATLAB version of the code contains many optimisations to improve the performance of the models.
