@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 import setuptools
 
-
-with open("README.md") as f:
-    readme = f.read()
-
-with open("LICENSE") as f:
-    license = f.read()
-
 setuptools.setup(
     name="PyIPM",
     version="2.0",
@@ -15,7 +8,7 @@ setuptools.setup(
     author="Jonathan Sadeghi",
     author_email="J.C.Sadeghi@liverpool.ac.uk",
     url="https://github.com/JCSadeghi/PyIPM/",
-    license=license,
+    license="LGPL-3.0 License",
     py_modules=["PyIPM"],
     install_requires=[
         "numpy>=1.12.1",
