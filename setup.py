@@ -10,7 +10,7 @@ with open("LICENSE") as f:
 
 setuptools.setup(
     name="PyIPM",
-    version="1.1",
+    version="2.0",
     description="Interval Predictor Models in Python",
     long_description=readme,
     author="Jonathan Sadeghi",
