@@ -12,7 +12,6 @@ setuptools.setup(
     name="PyIPM",
     version="2.0",
     description="Interval Predictor Models in Python",
-    long_description=readme,
     author="Jonathan Sadeghi",
     author_email="J.C.Sadeghi@liverpool.ac.uk",
     url="https://github.com/JCSadeghi/PyIPM/",
